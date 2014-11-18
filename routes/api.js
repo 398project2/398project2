@@ -6,7 +6,6 @@ var router = express.Router();
 router.get('/:connID', function(req, res) {
   console.log(req.params.connID);
   var connectionID = req.params.connID;
-  var connectionIDMatcher = new RegExp(connectionID);
 
   MongoClient.connect('mongodb://mega-group:398project2@ds053320.mongolab.com:53320/398project2', function handleResponse(err, db) {
     console.log('Opened connection to database, reading');
