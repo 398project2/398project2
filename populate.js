@@ -28,6 +28,11 @@ function preprocessJSON(cardJsonData) {
     // return Object.keys(cardJsonData).map(function eachCard(entry, i, array) {
     //     return cardJsonData[entry];
     // });
+    var dataArray = cardJsonData.ConnectionDescriptions;
+    dataArray.forEach(function handleEntry(entry, index) {
+        dataArray[index]._id = entry.CourseName.match(/CONX ([0-9]{5})/)[1];
+        // console.log(entry.CourseName.match(/CONX ([0-9]{5})/));
+    });
     return cardJsonData.ConnectionDescriptions;
 }
 

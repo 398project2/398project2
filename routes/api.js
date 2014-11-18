@@ -3,15 +3,43 @@ var express = require('express'),
 var router = express.Router();
 
 /* GET users listing. */
-router.get('/:connID', function(req, res) {
-  console.log(req.params.connID);
+router.route('/:connID').get(function(req, res) {
   var connectionID = req.params.connID;
 
   MongoClient.connect('mongodb://mega-group:398project2@ds053320.mongolab.com:53320/398project2', function handleResponse(err, db) {
-    console.log('Opened connection to database, reading');
-    db.collection('connections').find({ 'CourseName': { $regex: connectionID } }).toArray(function callback(err, data) {
-      console.log(data);
+    db.collection('connections').find({ '_id': connectionID  }).toArray(function callback(err, data) {
       res.send(data);
+    });
+  });
+}).delete(function(req, res) {
+  var connectionID = req.params.connID;
+  var connectionIDMatcher = new RegExp(connectionID);
+
+  MongoClient.connect('mongodb://mega-group:398project2@ds053320.mongolab.com:53320/398project2', function handleResponse(err, db) {
+    db.collection('connections').remove({ '_id': connectionID  }, function callback(err) {
+      if (!err) {
+      	res.send('deleted');
+      }
+      else {
+      	console.log(err);
+      	res.send('problem');
+      }
+    });
+  });
+}).put(function(req, res) {
+  var connectionID = req.params.connID;
+  var connectionIDMatcher = new RegExp(connectionID);
+  
+
+  MongoClient.connect('mongodb://mega-group:398project2@ds053320.mongolab.com:53320/398project2', function handleResponse(err, db) {
+    db.collection('connections').save(req.body, function callback(err) {
+      if (!err) {
+      	res.send('saved');
+      }
+      else {
+      	console.log(err);
+      	res.send('problem');
+      }
     });
   });
 });
