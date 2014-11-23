@@ -1,7 +1,6 @@
 var request = require('request'),
     cheerio = require('cheerio'),
-    fs      = require('fs'),
-    jade    = require('jade');
+    fs      = require('fs');
 
 var debug = process.argv[2] == 'debug' || process.argv[2] == '-d' ? true : false;
 var numSemesters;
@@ -11,17 +10,6 @@ if (debug) {
 else {
     numSemesters = Infinity;
 }
-
-// Adding a method to arrays to 'clean' out unwanted values
-Array.prototype.clean = function clean(deleteValue) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] == deleteValue) {
-            this.splice(i, 1);
-            i--;
-        }
-    }
-    return this;
-};
 
 // Order of events:
 // 1. Parse 'search page' to get all the filters (departments, areas, etc.)
@@ -57,21 +45,6 @@ function get(url) {
             }
             else {
                 resolve(body);
-            }
-        });
-    });
-}
-
-// Slightly specialized for use in getting for TinyURL API
-function tinyGet(url, key) {
-    // Return a new promise.
-    return new Promise(function requestGet(resolve, reject) {
-        request.get(url, /*{ pool: poolForRequests }, */function handleGetResponse(err, resp, newURL) {
-            if (err || resp.statusCode != 200) {
-                reject(Error(err || ('TinyURL unhappy: ' + resp.statusCode)));
-            }
-            else {
-                resolve({ key: key, newURL: newURL });
             }
         });
     });
@@ -151,7 +124,6 @@ function fetchSearchPage() {
     return get('https://weblprod1.wheatonma.edu/PROD/bzcrschd.P_ListSection');
 }
 
-var filterBlacklist;
 function parseOutFilters(searchPageBody) {
     var filterBlacklist = filterBlacklist || {
         '%': true,
@@ -162,11 +134,11 @@ function parseOutFilters(searchPageBody) {
 
     var filterObj = {};
 
-    filters.forEach(function handleEntry(filter, i, array) {
+    filters.forEach(function handleEntry(filter) {
         var prettifiedFilter = prettifyFilter(filter);
         filterObj[prettifiedFilter] = [];
 
-        $('select[name=' + filter + ']').find('option').each(function parseSelectOption(entry) {
+        $('select[name=' + filter + ']').find('option').each(function parseSelectOption() {
             var filterValue = $(this).val();
             if (!filterBlacklist[filterValue]) {
                 filterObj[prettifiedFilter].push({ val: filterValue, display: prettifyFilterValue($(this).text()) });
@@ -175,41 +147,6 @@ function parseOutFilters(searchPageBody) {
     });
 
     return filterObj;
-}
-
-function saveFilters(filterObj) {
-    var promise = new Promise(function getFiltersTemplate(resolve, reject) {
-        fs.readFile('static/course-data/filters.jade', function renderUsingTemplateFile(err, data) {
-            if (err) {
-                reject(Error(err));
-            }
-            else {
-                var func = jade.compile(data, { pretty: /*debug*/false, doctype: 'html' });
-                var html = func({ filterData: filterObj });
-                resolve(html);
-            }
-        });
-    }).then(function saveRenderedTemplate(html) {
-        fs.writeFile('static/course-data/compiled/filters.html', html, function handleFileWriteResponse(err) {
-            if (err) {
-                console.error(err);
-            }
-            else {
-                console.log('The filters html file was saved!');
-            }
-        });
-
-        if (debug) {
-            fs.writeFile('static/course-data/filters.json', JSON.stringify(filterObj, null, 2), function handleFileWriteResponse(err) {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    console.log('The filters json file was saved!');
-                }
-            });
-        }
-    }).catch(handlePromiseError);
 }
 
 function getSearchFilters() {
@@ -221,7 +158,7 @@ function getSearchFilters() {
 function preprocessFilters(filterObj) {
     // Preprocess to add the 'years' to the object, as they're something extra
     // not inherent in the old course schedule
-    var integerSemesterCodes = filterObj.semester.map(function handleEntry(entry, i, array) {
+    var integerSemesterCodes = filterObj.semester.map(function handleEntry(entry) {
         return parseInt(entry.val);
     });
 
@@ -243,58 +180,53 @@ function preprocessFilters(filterObj) {
 
 // =========================== Course Stuff ===========================
 
-var scheduleData = {};
+courseAreaFinder = {
+    'ARTS': 'ARCA',
+    'CW': 'ARCA',
+    'MUSC': 'ARCA',
+    'THEA': 'ARCA',
 
-// Translates the number system that Wheaton uses into the word system that WAVE uses
-var semesterTranslator = {
-    10: 'fall',
-    15: 'winter',
-    20: 'spring',
-    35: 'summer'
+
+    'HIST': 'ARHS',
+
+
+    'ARTH': 'ARHM',
+    'CLAS': 'ARHM',
+    'ENG': 'ARHM',
+    'FR': 'ARHM',
+    'GER': 'ARHM',
+    'HISP': 'ARHM',
+    'ITAS': 'ARHM',
+    'LAT': 'ARHM',
+    'PHIL': 'ARHM',
+    'REL': 'ARHM',
+    'RUSS': 'ARHM',
+    'WGS': 'ARHM', // (?)
+
+
+    'COMP': 'ARMC',
+    'MATH': 'ARMC',
+
+
+    'AST': 'ARNS',
+    'BIO': 'ARNS',
+    'CHEM': 'ARNS',
+    'PHYS': 'ARNS',
+
+
+    'AFDS': 'ARSS',
+    'ANTH': 'ARSS',
+    'ECON': 'ARSS',
+    'EDUC': 'ARSS',
+    'POLS': 'ARSS',
+    'PSY': 'ARSS',
+    'SOC': 'ARSS'
 };
-function extractInfoFromCode(semesterCode) {
-    var integerCode = parseInt(semesterCode);
-    var returnObj = { year: formatConvertYear(Math.floor(integerCode / 100)), semester: semesterTranslator[integerCode % 100] };
-
-    return returnObj;
-}
-
-var divAreaFoundTranslator;
-function prettifyDivAreaFound(raw) {
-    divAreaFoundTranslator = divAreaFoundTranslator || {
-        'ARCA': 'Creative Arts',
-        'ARHS': 'History',
-        'ARHM': 'Humanities',
-        'ARMC': 'Math and Computer Science',
-        'ARNS': 'Natural Science',
-        'ARSS': 'Social Sciences',
-
-        'DVAH': 'Arts and Humanities',
-        'DVNS': 'Natural Sciences',
-        'DVSS': 'Social Sciences',
-
-        'BW':   'Beyond the West',
-        'FS':   'First Year Seminar',
-        'WR':   'First Year Writing',
-        'FL':   'Foreign Language',
-        'QA':   'Quantitative Analysis'
-    };
-
-    var translated = divAreaFoundTranslator[raw];
-    if (translated === undefined) {
-        translated = raw;
-    }
-
-    return translated;
-}
 
 function parseSemesterData(semester) {
     console.log('Queuing parsing for ' + semester.code);
 
     $ = cheerio.load(semester.body);
-
-    var semesterCourses = {};
-    var courseLabelPattern = /^\s*([A-Z][A-Z][A-Z]?[A-Z]?\-[0-9][0-9][0-9])/;
 
     var allRows = $('tr');
 
@@ -312,9 +244,13 @@ function parseSemesterData(semester) {
                 return;
             }
 
+            if (courseArea === '') {
+                courseArea = courseAreaFinder[courseCode.match(/([A-Z]{2,4})/)[1]];
+            }
+
             courseCode = courseCode.match(/([A-Z]{2,4}-[0-9]{3})/)[1];
 
-            connectionCodes.forEach(function handleCode(conxCode, index) {
+            connectionCodes.forEach(function handleCode(conxCode) {
                 if (conxCode !== '') {
                     // console.log('Connection v1: ' + conxCode);
                     conxCode = parseInt(conxCode.slice(0, 2) + '0' + conxCode.slice(2, 4));
@@ -337,18 +273,12 @@ function parseSemesterData(semester) {
         }
     });
 
-    // console.log(conxObj);
-
     return conxObj;
 }
 
-// function postProcessSemesterData(semester) {
-//     return semester;
-// }
-
 function getAndParseSemesterHTML(semesterCodes) {
     return Promise.all(
-        semesterCodes.map(function mapSemesterCodeToPromise(semesterCode, i, array) {
+        semesterCodes.map(function mapSemesterCodeToPromise(semesterCode) {
             var tempFormData = dataValues;
             tempFormData.schedule_beginterm = semesterCode.val;
 
@@ -369,37 +299,6 @@ var dataValues = {
     'crse_numb' : '%',
 };
 
-function saveYearOfData(year) {
-    return new Promise(function readTemplateFile(resolve, reject) {
-        fs.readFile('static/course-data/courses.jade', function handleTemplateFileResponse(err, data) {
-            var trash = err ? reject(Error(err)) : resolve(data);
-        });
-    }).then(function renderUsingTemplateFile(template) {
-        var func = jade.compile(template, { pretty: /*debug*/false, doctype: 'html' });
-        var html = func({ courseData: scheduleData[year], prettifyDivAreaFound: prettifyDivAreaFound });
-
-        fs.writeFile('static/course-data/compiled/' + year + '.html', html, function handleFileWriteResponse(err) {
-            if (err) {
-                console.error(err);
-            }
-            else {
-                console.log('The courses ' + year + ' html file was saved!');
-            }
-        });
-
-        if (debug) {
-            fs.writeFile('static/course-data/' + year + '.json', JSON.stringify(scheduleData[year], null, 2), function handleFileWriteResponse(err) {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    console.log('The courses ' + year + ' json file was saved!');
-                }
-            });
-        }
-    }).catch(handlePromiseError);
-}
-
 function saveScheduleData(conxObjs) {
     var masterObj = {};
 
@@ -414,22 +313,22 @@ function saveScheduleData(conxObjs) {
                     masterObj[conxCode][area] = {};
                 }
 
-                conxObj[conxCode][area].forEach(function handleCourse(courseCode) {
-                    // console.log('Adding ' + courseCode + ' to conxObj[' + conxCode + '][' + area + ']');
-                    masterObj[conxCode][area][courseCode] = true;
-                });
+                for (var courseCode in conxObj[conxCode][area]) {
+                    masterObj[conxCode][area][conxObj[conxCode][area][courseCode]] = true; // Use an object to avoid duplicates
+                }
             }
         }
     });
 
     for (var conxCode in masterObj) {
         for (var area in masterObj[conxCode]) {
-            masterObj[conxCode][area] = Object.keys(masterObj[conxCode][area]);
+            masterObj[conxCode][area] = Object.keys(masterObj[conxCode][area]); // Convert object of booleans to array
         }
     }
 
-    console.log(JSON.stringify(masterObj, null, 2));
-    // console.log(masterObj['20001']['ARCA']);
+    fs.writeFile('conx.json', JSON.stringify(masterObj, null, 2), function handleError(err) {
+        console.log(err);
+    });
 }
 
 // =========================== Driver Stuff ===========================
