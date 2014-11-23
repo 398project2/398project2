@@ -4,13 +4,13 @@ from bs4 import BeautifulSoup
 
 def main():
     # scrapes data from wheaton website, formats it, and writes it to json 
-    data = {'submit_btn' : 'Search Catalog', 'schedule_beginterm':'201510', 'subject_cat':'CONX'}
+    data = {'submit_btn':'Search Catalog', 'schedule_beginterm':'201510', 'subject_cat':'CONX'}
     url = 'https://weblprod1.wheatonma.edu/PROD/bzcrschd.P_OpenDoor'
 
     r = requests.post(url=url, data=data)
 
     doc = BeautifulSoup(r.content.decode('utf-8'))
-    doc.prettify().encode('utf-8')
+    # doc.prettify().encode('utf-8')
 
     # regex determines whether data is a connection and then classifies it by division and number of courses
     connectionNames = re.compile(r'CONX [0-9][0-9][0-9][0-9][0-9]')
