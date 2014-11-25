@@ -1,5 +1,24 @@
 extends base_skeleton
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .row
+    .col-sm-12
+      label Select your courses
+
+      datalist#courses
+        //- option(value="COMP-225")
+        each course in allCourses
+          option(value=course)
+
+      div
+        input(type="text" list="courses")
+      div
+        input(type="text" list="courses")
+      div
+        input(type="text" list="courses")
+      div
+        input(type="text" list="courses")
+      div
+        input(type="text" list="courses")
+      div
+        input(type="text" list="courses")
