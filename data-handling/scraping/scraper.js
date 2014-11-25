@@ -32,10 +32,6 @@ else {
 
 // =========================== General Stuff ==========================
 
-// poolForRequests = {
-//     maxSockets: Infinity
-// }
-
 function get(url) {
     // Return a new promise.
     return new Promise(function requestGet(resolve, reject) {
