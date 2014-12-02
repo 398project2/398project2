@@ -1,1 +1,5 @@
+# NPM files
 node_modules/
+
+# Mac OSX config file
+.DS_Store
