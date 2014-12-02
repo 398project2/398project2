@@ -328,7 +328,7 @@ function saveScheduleData(conxObjs) {
         }
     }
 
-    allCoursesArray = Object.keys(allCourses);
+    allCoursesArray = Object.keys(allCourses).sort();
 
     fs.writeFile('../conx.json', JSON.stringify(masterObj, null, 2), function handleError(err) {
         if (err) console.log(err);

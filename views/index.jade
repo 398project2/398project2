@@ -4,16 +4,18 @@ block content
   .row
     .col-xs-12
       h1= title
-      
+
   .row
     .col-xs-12
-      span Select your courses
-        span#add-course.glyphicon.glyphicon-plus
+      form(method="POST")
+        span Select your courses
+          span#add-course.glyphicon.glyphicon-plus
 
-      datalist#courses
-        //- option(value="COMP-225")
-        //- each course in allCourses
-          option(value=course)
+        datalist#courses
+          each course in allCourses
+            option(value=course)
 
-      div.course
-        input(type="text" list="courses")
+        div.course
+          input(type="text" list="courses" name="0")
+
+        input(type="submit" value="Find my connections")
