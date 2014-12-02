@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+#add-course {
+  cursor: pointer;
+  padding-left: 5px;
+}

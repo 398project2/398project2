@@ -2,23 +2,18 @@ extends base_skeleton
 
 block content
   .row
-    .col-sm-12
-      label Select your courses
+    .col-xs-12
+      h1= title
+      
+  .row
+    .col-xs-12
+      span Select your courses
+        span#add-course.glyphicon.glyphicon-plus
 
       datalist#courses
         //- option(value="COMP-225")
         //- each course in allCourses
           option(value=course)
 
-      div
-        input(type="text" list="courses")
-      div
-        input(type="text" list="courses")
-      div
-        input(type="text" list="courses")
-      div
-        input(type="text" list="courses")
-      div
-        input(type="text" list="courses")
-      div
+      div.course
         input(type="text" list="courses")

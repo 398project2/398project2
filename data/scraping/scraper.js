@@ -269,6 +269,8 @@ function parseSemesterData(semester) {
         }
     });
 
+    console.log('Finished parsing for ' + semester.code);
+
     return conxObj;
 }
 
@@ -297,6 +299,7 @@ var dataValues = {
 
 function saveScheduleData(conxObjs) {
     var masterObj = {};
+    var allCourses = {};
 
     conxObjs.forEach(function handleObj(conxObj) {
         for (var conxCode in conxObj) {
@@ -310,6 +313,9 @@ function saveScheduleData(conxObjs) {
                 }
 
                 for (var courseCode in conxObj[conxCode][area]) {
+                    if (!(courseCode in allCourses)) {
+                        allCourses[conxObj[conxCode][area][courseCode]] = true;
+                    }
                     masterObj[conxCode][area][conxObj[conxCode][area][courseCode]] = true; // Use an object to avoid duplicates
                 }
             }
@@ -322,9 +328,15 @@ function saveScheduleData(conxObjs) {
         }
     }
 
-    fs.writeFile('conx.json', JSON.stringify(masterObj, null, 2), function handleError(err) {
-        console.log(err);
+    allCoursesArray = Object.keys(allCourses);
+
+    fs.writeFile('../conx.json', JSON.stringify(masterObj, null, 2), function handleError(err) {
+        if (err) console.log(err);
     });
+
+    fs.writeFile('../crs.json', JSON.stringify(allCoursesArray, null, 2), function handleError(err) {
+        if (err) console.log(err);
+    })
 }
 
 // =========================== Driver Stuff ===========================
