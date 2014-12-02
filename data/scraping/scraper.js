@@ -312,11 +312,12 @@ function saveScheduleData(conxObjs) {
                     masterObj[conxCode][area] = {};
                 }
 
-                for (var courseCode in conxObj[conxCode][area]) {
-                    if (!(courseCode in allCourses)) {
-                        allCourses[conxObj[conxCode][area][courseCode]] = true;
+                for (var courseCodeIndex in conxObj[conxCode][area]) {
+                    var courseCode = conxObj[conxCode][area][courseCodeIndex].replace(/-/g, ' ');
+                    if (!(courseCodeIndex in allCourses)) {
+                        allCourses[courseCode] = true;
                     }
-                    masterObj[conxCode][area][conxObj[conxCode][area][courseCode]] = true; // Use an object to avoid duplicates
+                    masterObj[conxCode][area][courseCode] = true; // Use an object to avoid duplicates
                 }
             }
         }
@@ -332,10 +333,12 @@ function saveScheduleData(conxObjs) {
 
     fs.writeFile('../conx.json', JSON.stringify(masterObj, null, 2), function handleError(err) {
         if (err) console.log(err);
+        console.log('Saved conx.json');
     });
 
     fs.writeFile('../crs.json', JSON.stringify(allCoursesArray, null, 2), function handleError(err) {
         if (err) console.log(err);
+        console.log('Saved crs.json');
     })
 }
 
