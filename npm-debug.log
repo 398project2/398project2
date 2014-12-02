@@ -1,32 +1,26 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start' ]
-2 info using npm@2.0.0
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', '-g', 'nodemon' ]
+2 info using npm@1.4.28
 3 info using node@v0.11.14
-4 verbose run-script [ 'prestart', 'start', 'poststart' ]
-5 info prestart wave-data@0.0.0
-6 info start wave-data@0.0.0
-7 verbose unsafe-perm in lifecycle true
-8 info wave-data@0.0.0 Failed to exec start script
-9 verbose stack Error: Exit status 1
-9 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:212:16)
-9 verbose stack     at ChildProcess.emit (events.js:110:17)
-9 verbose stack     at maybeClose (child_process.js:1000:16)
-9 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1072:5)
-10 verbose pkgid wave-data@0.0.0
-11 verbose cwd /Users/bryanjensen/Desktop/wheatconx
-12 error Darwin 14.0.0
-13 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
-14 error node v0.11.14
-15 error npm  v2.0.0
-16 error code ELIFECYCLE
-17 error wave-data@0.0.0 start: `node ./web.js`
-17 error Exit status 1
-18 error Failed at the wave-data@0.0.0 start script.
-18 error This is most likely a problem with the wave-data package,
-18 error not with npm itself.
-18 error Tell the author that this fails on your system:
-18 error     node ./web.js
-18 error You can get their info via:
-18 error     npm owner ls wave-data
-18 error There is likely additional logging output above.
-19 verbose exit [ 1, true ]
+4 error Error: Cannot find module '../utils/map-to-registry.js'
+4 error     at Function.Module._resolveFilename (module.js:336:15)
+4 error     at Function.Module._load (module.js:278:25)
+4 error     at Module.require (module.js:365:17)
+4 error     at require (module.js:384:17)
+4 error     at Object.<anonymous> (/usr/local/lib/node_modules/npm/lib/cache/add-named.js:17:21)
+4 error     at Module._compile (module.js:460:26)
+4 error     at Object.Module._extensions..js (module.js:478:10)
+4 error     at Module.load (module.js:355:32)
+4 error     at Function.Module._load (module.js:310:12)
+4 error     at Module.require (module.js:365:17)
+4 error     at require (module.js:384:17)
+5 error If you need help, you may report this *entire* log,
+5 error including the npm and node versions, at:
+5 error     <http://github.com/npm/npm/issues>
+6 error System Darwin 13.4.0
+7 error command "node" "/usr/local/bin/npm" "install" "-g" "nodemon"
+8 error cwd /Users/apple/Desktop/wave-data
+9 error node -v v0.11.14
+10 error npm -v 1.4.28
+11 error code MODULE_NOT_FOUND
+12 verbose exit [ 1, true ]
