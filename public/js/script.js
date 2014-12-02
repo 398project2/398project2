@@ -1,5 +1,6 @@
 $(function() {
     $('#add-course').click(function() {
-        $(this).siblings('.course').last().clone().insertBefore(this);
+        var lastCourse = $(this).parent().siblings('.course').last();
+        lastCourse.clone().insertAfter(lastCourse);
     });
 });
