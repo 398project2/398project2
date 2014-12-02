@@ -17,7 +17,17 @@ router.route('/')
       i++;
     }
 
-    res.render('result', { title: 'Thanks!', courses: submittedCourses })
+    var courseConx = JSON.parse(fs.readFileSync('data/scraping/course_conx.json'));
+    var conxCourses = [];
+
+    var conxCode;
+
+    for (i in submittedCourses) {
+      conxCode = submittedCourses[i];
+      conxCourses.push.apply(conxCourses, courseConx[conxCode]);
+    }
+
+    res.render('result', { title: 'Thanks!', courses: conxCourses })
   });
 
 router
