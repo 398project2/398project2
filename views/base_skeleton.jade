@@ -2,8 +2,13 @@ doctype html
 html
   head
     title= title
+
     link(rel='stylesheet', href='/css/style.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
 
+    script(src='https://code.jquery.com/jquery-2.1.1.min.js')
+    script(src='/js/script.js')
+
   body
-    block content
+    .container
+      block content
