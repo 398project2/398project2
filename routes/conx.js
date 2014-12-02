@@ -17,8 +17,6 @@ router.route('/')
       i++;
     }
 
-    console.log(submittedCourses);
-
     res.render('result', { title: 'Thanks!', courses: submittedCourses })
   });
 
