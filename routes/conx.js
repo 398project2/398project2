@@ -1,10 +1,26 @@
 var express = require('express'),
+    fs = require('fs'),
     MongoClient = require('mongodb').MongoClient;
 var router = express.Router();
 
-router.get('/', function(req, res) {
-  res.render('index', { title: 'Connections' });
-});
+router.route('/')
+  .get(function(req, res) {
+    var allCourses = JSON.parse(fs.readFileSync('data/crs.json'));
+    res.render('index', { title: 'Connections', allCourses: allCourses });
+  })
+  .post(function(req, res) {
+    var submittedCourses = [];
+
+    var i = 0;
+    while (req.body['' + i] != null) {
+      submittedCourses.push(req.body['' + i]);
+      i++;
+    }
+
+    console.log(submittedCourses);
+
+    res.render('result', { title: 'Thanks!', courses: submittedCourses })
+  });
 
 router
   // Middleware to load database for all following method routes
