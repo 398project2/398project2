@@ -15,7 +15,20 @@ block content
           each course in allCourses
             option(value=course)
 
+        div.conx
+          span Select your connections
+            span#add-conx.glyphicon.glyphicon-plus
+
+          datalist#connections
+            each connection in allConnections
+              option(value=connection)
+
         div.course
           input(type="text" list="courses" name="0")
 
+          input.connection(type="text" list="connections" name="0")
+
         input(type="submit" value="Find my connections")
+
+
+        input.connection#align_left(type="submit" value="Find the courses")
