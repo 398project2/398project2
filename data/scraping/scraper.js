@@ -306,7 +306,7 @@ function saveScheduleData(conxObjs) {
         for (var conxCode in conxObj) {
             if (!(conxCode in masterObj)) {
                 masterObj[conxCode] = {};
-                allConnections["CONX " + conxCode] = true;
+                allConnections[conxCode] = true;
             }
 
             for (var area in conxObj[conxCode]) {
