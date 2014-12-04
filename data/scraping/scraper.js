@@ -300,11 +300,13 @@ var dataValues = {
 function saveScheduleData(conxObjs) {
     var masterObj = {};
     var allCourses = {};
+    var allConnections = {};
 
     conxObjs.forEach(function handleObj(conxObj) {
         for (var conxCode in conxObj) {
             if (!(conxCode in masterObj)) {
                 masterObj[conxCode] = {};
+                allConnections["CONX " + conxCode] = true;
             }
 
             for (var area in conxObj[conxCode]) {
@@ -330,6 +332,7 @@ function saveScheduleData(conxObjs) {
     }
 
     allCoursesArray = Object.keys(allCourses).sort();
+    allConnectionsArray = Object.keys(allConnections).sort();
 
     fs.writeFile('../conx.json', JSON.stringify(masterObj, null, 2), function handleError(err) {
         if (err) console.log(err);
@@ -339,6 +342,11 @@ function saveScheduleData(conxObjs) {
     fs.writeFile('../crs.json', JSON.stringify(allCoursesArray, null, 2), function handleError(err) {
         if (err) console.log(err);
         console.log('Saved crs.json');
+    })
+
+    fs.writeFile('../conxs.json', JSON.stringify(allConnectionsArray, null, 2), function handleError(err) {
+        if (err) console.log(err);
+        console.log('Saved conxs.json');
     })
 }
 

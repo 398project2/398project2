@@ -6,10 +6,12 @@ var router = express.Router();
 router.route('/')
   .get(function(req, res) {
     var allCourses = JSON.parse(fs.readFileSync('data/crs.json'));
-    res.render('index', { title: 'Connections', allCourses: allCourses });
+    var allConnections = JSON.parse(fs.readFileSync('data/conxs.json'));
+    res.render('index', { title: 'Connections', allCourses: allCourses, allConnections: allConnections });
   })
   .post(function(req, res) {
     var submittedCourses = [];
+    var submittedConnections = [];
 
     var i = 0;
     while (req.body['' + i] != null) {
