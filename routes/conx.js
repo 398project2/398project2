@@ -4,30 +4,46 @@ var express = require('express'),
 var router = express.Router();
 
 router.route('/')
+
   .get(function(req, res) {
     var allCourses = JSON.parse(fs.readFileSync('data/crs.json'));
-    res.render('index', { title: 'Connections', allCourses: allCourses });
+    var allConnections = JSON.parse(fs.readFileSync('data/conxs.json'));
+    console.log(allConnections);
+    res.render('index', { title: 'Connections', allCourses: allCourses, allConnections: allConnections });
   })
+
   .post(function(req, res) {
     var submittedCourses = [];
-
-    var i = 0;
-    while (req.body['' + i] != null) {
-      submittedCourses.push(req.body['' + i]);
-      i++;
-    }
-
-    var courseConx = JSON.parse(fs.readFileSync('data/scraping/course_conx.json'));
+    var submittedConnections = [];
     var conxCourses = [];
 
-    var conxCode;
+    if (req.body.conx != '') {
+      var conxObject = JSON.parse(fs.readFileSync('data/conx.json'));
 
-    for (i in submittedCourses) {
-      conxCode = submittedCourses[i];
-      conxCourses.push.apply(conxCourses, courseConx[conxCode]);
+      var subObj = conxObject[req.body.conx];
+
+      for (var key in subObj) {
+        conxCourses.push.apply(conxCourses, subObj[key]);
+      }
+    }
+    else {
+      var i = 0;
+      while (req.body['' + i] != null) {
+        submittedCourses.push(req.body['' + i]);
+        i++;
+      }
+
+      var courseConx = JSON.parse(fs.readFileSync('data/scraping/course_conx.json'));
+
+      var conxCode;
+
+      for (i in submittedCourses) {
+        conxCode = submittedCourses[i];
+        conxCourses.push.apply(conxCourses, courseConx[conxCode]);
+      }
     }
 
-    res.render('result', { title: 'Thanks!', courses: conxCourses })
+    res.render('result', { title: 'Results:', courses: conxCourses });
   });
 
 router

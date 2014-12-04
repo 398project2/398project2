@@ -7,7 +7,7 @@ router.route('/:id').get(function(req, res) {
     var courseID = req.params.id;
 
    /**/ MongoClient.connect('mongodb://mega-group:398project2@ds053320.mongolab.com:53320/398project2', function handleResponse(err, db) {
-      db.collection('courses').find({ '_id': courseID  }).toArray(function callback(err, data) {
+      db.collection('connections').find({ '_id': courseID  }).toArray(function callback(err, data) {
         if (err) { console.log(err); res.send(err.message); }
         else { res.send(data); }
       });
@@ -17,7 +17,7 @@ router.route('/:id').get(function(req, res) {
     var courseID = req.params.id;
 
     /**/ MongoClient.connect('mongodb://mega-group:398project2@ds053320.mongolab.com:53320/398project2', function handleResponse(err, db) {
-      db.collection('courses').remove({ '_id': courseID  }, function callback(err) {
+      db.collection('connections').remove({ '_id': courseID  }, function callback(err) {
         if (err) { console.log(err); res.send(err.message); }
         else { res.send('success'); }
       });
@@ -27,7 +27,7 @@ router.route('/:id').get(function(req, res) {
     var courseID = req.params.id;
 
     /**/ MongoClient.connect('mongodb://mega-group:398project2@ds053320.mongolab.com:53320/398project2', function handleResponse(err, db) {
-      db.collection('courses').save(req.body, function callback(err) {
+      db.collection('connections').save(req.body, function callback(err) {
         if (err) { console.log(err); res.send(err.message); }
         else { res.send('success'); }
       });

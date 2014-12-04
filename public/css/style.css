@@ -11,3 +11,24 @@ a {
   cursor: pointer;
   padding-left: 5px;
 }
+
+h1 {
+    text-align: center;
+}
+
+input {
+    display: block;
+}
+
+#courses {
+    margin-bottom: 40px;
+}
+
+#courses > *,
+#conx > * {
+    margin-top: 10px;
+}
+
+#results {
+    text-align: center;
+}
