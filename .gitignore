@@ -3,3 +3,6 @@ node_modules/
 
 # Mac OSX config file
 .DS_Store
+
+# NPM
+npm_debug.log
