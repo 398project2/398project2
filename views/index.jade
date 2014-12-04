@@ -5,30 +5,30 @@ block content
     .col-xs-12
       h1= title
 
-  .row
-    .col-xs-12
-      form(method="POST")
-        span Select your courses
-          span#add-course.glyphicon.glyphicon-plus
+  form(method="POST")
+    .row
+      .col-xs-6
+        div#courses
+          span Select your courses
+            span#add-course.glyphicon.glyphicon-plus
+          input(type="text" list="courses" name="0")
+          input(type="submit" value="Find my connections")
 
-        datalist#courses
-          each course in allCourses
-            option(value=course)
+          datalist#courses-list
+            each course in allCourses
+              option(value=course)
+      .col-xs-6
 
-        div.conx
+        div#conx
           span Select your connections
-            span#add-conx.glyphicon.glyphicon-plus
+          input.connection(type="text" list="connections" name="conx")
+          input.connection#align_left(type="submit" value="Find the courses")
 
           datalist#connections
             each connection in allConnections
               option(value=connection)
 
         div.course
-          input(type="text" list="courses" name="0")
-
-          input.connection(type="text" list="connections" name="0")
-
-        input(type="submit" value="Find my connections")
 
 
-        input.connection#align_left(type="submit" value="Find the courses")
+

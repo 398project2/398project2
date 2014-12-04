@@ -4,32 +4,40 @@ var express = require('express'),
 var router = express.Router();
 
 router.route('/')
+
   .get(function(req, res) {
     var allCourses = JSON.parse(fs.readFileSync('data/crs.json'));
     var allConnections = JSON.parse(fs.readFileSync('data/conxs.json'));
+    console.log(allConnections);
     res.render('index', { title: 'Connections', allCourses: allCourses, allConnections: allConnections });
   })
+
   .post(function(req, res) {
     var submittedCourses = [];
     var submittedConnections = [];
-
-    var i = 0;
-    while (req.body['' + i] != null) {
-      submittedCourses.push(req.body['' + i]);
-      i++;
-    }
-
-    var courseConx = JSON.parse(fs.readFileSync('data/scraping/course_conx.json'));
     var conxCourses = [];
 
-    var conxCode;
+    if (req.body.conx != '') {
 
-    for (i in submittedCourses) {
-      conxCode = submittedCourses[i];
-      conxCourses.push.apply(conxCourses, courseConx[conxCode]);
     }
+    else {
+      var i = 0;
+      while (req.body['' + i] != null) {
+        submittedCourses.push(req.body['' + i]);
+        i++;
+      }
 
-    res.render('result', { title: 'Thanks!', courses: conxCourses })
+      var courseConx = JSON.parse(fs.readFileSync('data/scraping/course_conx.json'));
+
+      var conxCode;
+
+      for (i in submittedCourses) {
+        conxCode = submittedCourses[i];
+        conxCourses.push.apply(conxCourses, courseConx[conxCode]);
+      }
+    }
+    
+    res.render('result', { title: 'Thanks!', courses: conxCourses });
   });
 
 router

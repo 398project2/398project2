@@ -12,10 +12,15 @@ a {
   padding-left: 5px;
 }
 
-#align_left {
-	margin-right: 54px;
+input {
+    display: block;
 }
 
-.conx, .connection{
+/*#align_left {
+	margin-right: 54px;
+}*/
+
+/*.conx, .connection{
 	float: right;
 }
+*/
