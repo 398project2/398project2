@@ -7,8 +7,8 @@ block content
 
   form(method="POST")
     .row
-      .col-xs-6
-        div#courses
+      .col-xs-12.col-sm-2.col-sm-offset-2
+        div.search-options#courses
           span Select your courses
             span#add-course.glyphicon.glyphicon-plus
           input(type="text" list="courses" name="0")
@@ -17,9 +17,9 @@ block content
           datalist#courses-list
             each course in allCourses
               option(value=course)
-      .col-xs-6
 
-        div#conx
+      .col-xs-12.col-sm-2.col-sm-offset-4
+        div.search-options#conx
           span Select your connections
           input.connection(type="text" list="connections" name="conx")
           input.connection#align_left(type="submit" value="Find the courses")

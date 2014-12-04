@@ -18,7 +18,13 @@ router.route('/')
     var conxCourses = [];
 
     if (req.body.conx != '') {
+      var conxObject = JSON.parse(fs.readFileSync('data/conx.json'));
 
+      var subObj = conxObject[req.body.conx];
+
+      for (var key in subObj) {
+        conxCourses.push.apply(conxCourses, subObj[key]);
+      }
     }
     else {
       var i = 0;
@@ -36,8 +42,8 @@ router.route('/')
         conxCourses.push.apply(conxCourses, courseConx[conxCode]);
       }
     }
-    
-    res.render('result', { title: 'Thanks!', courses: conxCourses });
+
+    res.render('result', { title: 'Results:', courses: conxCourses });
   });
 
 router
