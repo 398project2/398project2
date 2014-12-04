@@ -8,7 +8,6 @@ router.route('/')
   .get(function(req, res) {
     var allCourses = JSON.parse(fs.readFileSync('data/crs.json'));
     var allConnections = JSON.parse(fs.readFileSync('data/conxs.json'));
-    console.log(allConnections);
     res.render('index', { title: 'Connections', allCourses: allCourses, allConnections: allConnections });
   })
 
@@ -17,7 +16,9 @@ router.route('/')
     var submittedConnections = [];
     var conxCourses = [];
 
-    if (req.body.conx != '') {
+    console.log(req.body);
+
+    if (req.body.conx_submit) {
       var conxObject = JSON.parse(fs.readFileSync('data/conx.json'));
 
       var subObj = conxObject[req.body.conx];
@@ -26,7 +27,7 @@ router.route('/')
         conxCourses.push.apply(conxCourses, subObj[key]);
       }
     }
-    else {
+    else if (req.body.course_submit) {
       var i = 0;
       while (req.body['' + i] != null) {
         submittedCourses.push(req.body['' + i]);

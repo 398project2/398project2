@@ -6,6 +6,5 @@ $(function() {
         clone.insertAfter(lastCourse)
             .attr('name', lastName + 1)
             .focus();
-        // console.log(clone);
     });
 });

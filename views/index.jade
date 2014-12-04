@@ -12,7 +12,7 @@ block content
           span Select your courses
             span#add-course.glyphicon.glyphicon-plus
           input(type="text" list="courses-list" name="0")
-          input(type="submit" value="Find my connections")
+          input(type="submit" name="course_submit" value="Find my connections")
 
           datalist#courses-list
             each course in allCourses
@@ -22,7 +22,7 @@ block content
         div.search-options#conx
           span Select your connections
           input.connection(type="text" list="connections" name="conx")
-          input.connection#align_left(type="submit" value="Find the courses")
+          input.connection(type="submit" name="conx_submit" value="Find the courses")
 
           datalist#connections
             each connection in allConnections
